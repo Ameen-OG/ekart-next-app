@@ -5,7 +5,7 @@ import Image from "next/image";
 
 // 1. Dynamic Metadata
 export async function generateMetadata({ params }) {
-  const { id } = await params;
+  const { id } =  params;
   try {
     const product = await getProduct(id); // Use singular
     if (!product) return { title: "Product Not Found" };
