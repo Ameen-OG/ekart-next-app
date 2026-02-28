@@ -23,10 +23,12 @@ export default async function Products({ searchParams }) {
 
     const query = params?.q?.toLowerCase() || "";
 
-    const filteredProducts = products.filter((product) =>
-      product.title?.toLowerCase().includes(query) || 
-      product.description?.toLowerCase().includes(query)
-    );
+  // Replace your existing filter logic with this safer version:
+const filteredProducts = products.filter((product) => {
+  const title = product.title?.toLowerCase() || "";
+  const description = product.description?.toLowerCase() || "";
+  return title.includes(query) || description.includes(query);
+});
 
     return (
       <PageWrapper>
