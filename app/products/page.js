@@ -4,7 +4,7 @@ import PageWrapper from "@/components/PageWrapper";
 
 export async function generateMetadata({ searchParams }) {
   // Only await if you are actually going to use 'params'
-  const params = await searchParams;
+  const params = searchParams;
   return {
     title: params?.q ? `Search results for "${params.q}" | Ekart` : "All Products List of Ekart",
     description: "Browse the latest products on Ekart ecommerce platform.",
