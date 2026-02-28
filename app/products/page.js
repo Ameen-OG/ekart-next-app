@@ -30,6 +30,9 @@ const filteredProducts = products.filter((product) => {
   return title.includes(query) || description.includes(query);
 });
 
+
+  console.log("DEBUG: API URL is", process.env.NEXT_PUBLIC_API_URL);
+console.log("DEBUG: Products found:", products?.length);
     return (
       <PageWrapper>
         <div className="flex justify-between items-center mb-6">
