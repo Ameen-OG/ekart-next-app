@@ -1,4 +1,4 @@
-import { getProduct } from "@/lib/api";
+import  {getProducts}  from "@/lib/api";
 import AddToCartButton from "@/components/AddToCartButton";
 import PageWrapper from "@/components/PageWrapper";
 import Image from "next/image";
@@ -6,7 +6,7 @@ import Image from "next/image";
 // 1. Dynamic Metadata Function (Cleaned for JavaScript)
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const product = await getProduct(id);
+  const product = await getProducts(id);
 
   if (!product) {
     return { title: "Product Not Found" };
