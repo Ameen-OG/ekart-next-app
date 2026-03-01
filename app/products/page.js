@@ -2,6 +2,29 @@ import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import PageWrapper from "@/components/PageWrapper";
 
+// Add metadata for the products page
+export async function generateMetadata() {
+  try {
+    const products = await getProducts();
+    
+    return {
+      title: "All Products | Ekart Store",
+      description: `Browse our collection of ${products.length} amazing products at Ekart Store. Find the best deals on electronics, clothing, and more.`,
+      keywords: "ecommerce, shop, products, electronics, clothing, deals",
+      openGraph: {
+        title: "All Products | Ekart Store",
+        description: `Shop ${products.length} products at Ekart Store`,
+        type: "website",
+      },
+    };
+  } catch (error) {
+    return {
+      title: "All Products | Ekart Store",
+      description: "Browse our amazing collection of products at Ekart Store.",
+    };
+  }
+}
+
 export default async function Products({ searchParams }) {
   // 1. Fetch products with error handling (now returns mock data if API fails)
   const products = await getProducts();
