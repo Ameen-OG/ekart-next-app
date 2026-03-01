@@ -1,13 +1,14 @@
-import { getProduct } from "@/lib/api"; // Changed to singular getProduct
+import { getProduct } from "@/lib/api";
 import AddToCartButton from "@/components/AddToCartButton";
 import PageWrapper from "@/components/PageWrapper";
 import Image from "next/image";
+import { notFound } from 'next/navigation';
 
-// 1. Dynamic Metadata
+// Dynamic Metadata
 export async function generateMetadata({ params }) {
-  const { id } =  params;
+  const { id } = await params;
   try {
-    const product = await getProduct(id); // Use singular
+    const product = await getProduct(id);
     if (!product) return { title: "Product Not Found" };
 
     return {
@@ -19,48 +20,53 @@ export async function generateMetadata({ params }) {
   }
 }
 
-// 2. Main Page Component
+// Main Page Component
 export default async function ProductDetail({ params }) {
   const { id } = await params;
-  const product = await getProduct(id); // Use singular
+  
+  try {
+    const product = await getProduct(id);
 
-  // SAFETY CHECK: If product doesn't exist or doesn't have an image
-  if (!product || !product.image) {
+    // SAFETY CHECK: If product doesn't exist
+    if (!product) {
+      notFound(); // This will show the 404 page
+    }
+
     return (
       <PageWrapper>
-        <div className="py-20 text-center">
-          <h2 className="text-xl font-bold">Product not found.</h2>
-          <p>The item you are looking for does not exist or has no image.</p>
+        <div className="grid md:grid-cols-2 gap-10 py-10">
+          <div className="relative w-full h-96 bg-white rounded-xl p-4">
+            {product.image ? (
+              <Image
+                src={product.image}
+                alt={product.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                <span>No image available</span>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+            <p className="text-2xl font-semibold text-blue-600 mb-4">
+              ${Number(product.price).toFixed(2)}
+            </p>
+            <p className="text-gray-600 leading-relaxed mb-6">
+              {product.description}
+            </p>
+            <AddToCartButton product={product} />
+          </div>
         </div>
       </PageWrapper>
     );
+  } catch (error) {
+    console.error("Error in ProductDetail:", error);
+    notFound();
   }
-
-  return (
-    <PageWrapper>
-      <div className="grid md:grid-cols-2 gap-10 py-10">
-        <div className="relative w-full h-96 bg-white rounded-xl p-4">
-          <Image
-            src={product.image} // Now guaranteed not to be ""
-            alt={product.title}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-contain"
-            priority
-          />
-        </div>
-
-        <div>
-          <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-          <p className="text-2xl font-semibold text-blue-600 mb-4">
-            ${Number(product.price).toFixed(2)}
-          </p>
-          <p className="text-gray-600 leading-relaxed mb-6">
-            {product.description}
-          </p>
-          <AddToCartButton product={product} />
-        </div>
-      </div>
-    </PageWrapper>
-  );
 }
